@@ -98,26 +98,7 @@ class MyWindow(QtWidgets.QWidget):
     def show_info(self):
         QtWidgets.QMessageBox.information(self, '下载确认', 'Finished')
 
-class Sub_gui(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-
-    def initUI(self):
-        self.pbar = QtWidgets.QProgressBar(self)
-        self.time_l = QtWidgets.QLabel(self)
-        self.time_l.setText('Downloading...')
-        self.timer = QBasicTimer()
-        self.step = 0
-        vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(self.pbar)
-        vbox.addWidget(self.time_l)
-        self.setLayout(vbox)
-
-
-
-
-
-
+        
 class Get_Download_Url(QThread, QObject):
     download_song_signal = pyqtSignal()
 
