@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QThread, QObject, QBasicTimer, pyqtSlot
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtGui import  QIcon
@@ -27,11 +27,15 @@ class MyWindow(QtWidgets.QWidget):
         self.muisc_ls = []
     def initUI(self):
         H_header = ['歌曲名', '歌手', '专辑', '下载链接']
-        self.resize(900, 720)
+        self.resize(1200, 700)
         self.desktop = QtWidgets.QApplication.desktop()
         x = (self.desktop.width() - self.width()) // 2
         y = (self.desktop.height() - self.height()) // 2
         self.move(x, y)
+        #禁止最大化 禁止拉伸
+        self.setWindowFlag(QtCore.Qt.WindowMinimizeButtonHint)
+        self.setFixedSize(self.width(), self.height())
+
         self.setWindowIcon(QIcon('qqmusic.jpg'))
         self.setWindowTitle('QQ音乐下载器')
         self.table = QtWidgets.QTableWidget()
@@ -107,14 +111,15 @@ class MyWindow(QtWidgets.QWidget):
         self.file_name, extension = QFileDialog.getSaveFileName(self,
                                                'save music',
                                                 '/Users/Kay/Music/'+music_name+'_'+singer+'.mp3'
-
-                                                  )
+                                                )
 
         self.music_url = self.music_ls[i][3]
-        obj = Get_Download_Url(self.music_url)
-        obj.start()
-
-        obj.download_song_signal.connect(self.download_music)
+        if self.file_name:
+            obj = Get_Download_Url(self.music_url)
+            obj.start()
+            obj.download_song_signal.connect(self.download_music)
+        else:
+            pass
 
     def download_music(self, download_url):
         print(download_url)
@@ -195,12 +200,6 @@ class Get_Download_Url(QThread, QObject):
     def run(self):
         download_url = self.get_url(self.music_url)
         self.download_song_signal.emit(download_url)
-
-
-
-
-
-
 
 def get_html(keyword):
     headers = {
