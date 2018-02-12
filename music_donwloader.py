@@ -24,7 +24,7 @@ class MyWindow(QtWidgets.QWidget):
         self.initUI()
         self.file_name = None
         self.text =None
-        self.ls, self.muisc_ls = [], []
+        self.muisc_ls = []
     def initUI(self):
         H_header = ['歌曲名', '歌手', '专辑', '下载链接']
         self.resize(900, 720)
@@ -46,6 +46,7 @@ class MyWindow(QtWidgets.QWidget):
         self.table.setShowGrid(False)
 
         self.search_text = QtWidgets.QLineEdit('在这里输入歌曲名：')
+
         #默认文本框内容全选 光标放置在文本框
         self.search_text.selectAll()
         self.search_text.setFocus()
@@ -69,14 +70,15 @@ class MyWindow(QtWidgets.QWidget):
         vbox.addWidget(self.table)
         self.setLayout(vbox)
 
-    @pyqtSlot()
+
     def get_list(self):
         #self.test_lable.setText(text)
+
         self.text = self.search_text.text()
         self.btns = []
-
-        self.music_ls = get_info(self.ls, self.text)
-        print(self.music_ls)
+        self.table.clearContents()
+        self.music_ls = get_info(self.text)
+        #print(self.music_ls)
         try:
             for i in range(20):
                 for j in range(3):
@@ -242,7 +244,8 @@ def parse_html(html):
                 singer = singer_temp[0].get('name')
                 yield (music_name, singer, music_albumname, music_id)
 
-def get_info(ls, keyword):
+def get_info(keyword):
+    ls = []
     html = get_html(keyword)
     music_id = parse_html(html)
     music_name, singer, music_album, music_url = [], [], [], []
@@ -257,7 +260,7 @@ def get_info(ls, keyword):
         #print("Downloading" + ">>>>>" + music_name[i] + '-----' + singer[i] + "-----" + music_album[i])
         csv_ls_temp = [music_name[i], singer[i], music_album[i], music_url[i]]
         ls.append(csv_ls_temp)
-
+    print(ls)
     return ls
 
 if __name__ == '__main__':
